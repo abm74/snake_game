@@ -237,6 +237,17 @@ class _HomePageState extends State<HomePage> {
         body: KeyboardListener(
           autofocus: true,
           onKeyEvent: (value) {
+            if (!gameStarted) {
+              switch (value.logicalKey) {
+                case LogicalKeyboardKey.arrowUp:
+                case LogicalKeyboardKey.arrowDown:
+                case LogicalKeyboardKey.arrowLeft:
+                case LogicalKeyboardKey.arrowRight:
+                case LogicalKeyboardKey.enter:
+                  startGame();
+              }
+            }
+
             if (value.logicalKey == LogicalKeyboardKey.arrowUp) {
               if (currDirection != Direction.down &&
                   currDirection != Direction.up) {
