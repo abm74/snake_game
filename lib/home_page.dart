@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:snake_game/blank_pixel.dart';
 import 'package:snake_game/food_pixel.dart';
 import 'package:snake_game/snake_pixel.dart';
@@ -236,9 +235,9 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(241, 0, 0, 0),
         body: KeyboardListener(
+          autofocus: true,
           onKeyEvent: (value) {
-            if (value.logicalKey == LogicalKeyboardKey.arrowUp ||
-                value.physicalKey == PhysicalKeyboardKey.arrowUp) {
+            if (value.logicalKey == LogicalKeyboardKey.arrowUp) {
               if (currDirection != Direction.down &&
                   currDirection != Direction.up) {
                 setState(() {
@@ -313,108 +312,164 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      // textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Current score',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 17),
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          // textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                // mainAxisSize: MainAxisSize.min,
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                // crossAxisAlignment: CrossAxisAlignment.end,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      'Current score',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17),
+                                    ),
+                                    Text(
+                                      '$score',
+                                      style: const TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.symmetric(
+                                //       horizontal: 25),
+                                //   child: Text(
+                                //     '$score',
+                                //     style: const TextStyle(
+                                //         fontSize: 25,
+                                //         fontWeight: FontWeight.bold),
+                                //   ),
+                                // )
+                                // ],
                               ),
-                              Text(
-                                '$score',
-                                style: const TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'TOP FIVE HIGH SCORES',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                              StreamBuilder(
-                                stream: FirebaseFirestore.instance
-                                    .collection('scores')
-                                    .limit(5)
-                                    .orderBy('score', descending: true)
-                                    .snapshots(),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<
-                                            QuerySnapshot<Map<String, dynamic>>>
-                                        snapshot) {
-                                  if (snapshot.hasData) {
-                                    if (snapshot.data!.size > 0) {
-                                      return Container(
-                                        alignment: Alignment.centerLeft,
-                                        // constraints: BoxConstraints(),
-                                        height: snapshot.data!.size * 20,
-                                        width: 150,
-                                        child: ListView.builder(
-                                            itemCount: snapshot.data!.size,
-                                            itemBuilder: (context, index) {
-                                              return Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    snapshot.data!.docs[index]
-                                                        .data()['score']
-                                                        .toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                            ),
+                            const Expanded(
+                              child: SizedBox(
+                                  // width: 30,
+                                  ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: gameStarted
+                                  ? Container()
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'TOP FIVE HIGH SCORES',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        ),
+                                        StreamBuilder(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('scores')
+                                              .limit(5)
+                                              .orderBy('score',
+                                                  descending: true)
+                                              .snapshots(),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<
+                                                      QuerySnapshot<
+                                                          Map<String, dynamic>>>
+                                                  snapshot) {
+                                            if (snapshot.hasData) {
+                                              if (snapshot.data!.size > 0) {
+                                                return Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 25),
+                                                  child: SizedBox(
+                                                    // alignment: Alignment.centerLeft,
+                                                    // constraints: BoxConstraints(),
+                                                    height:
+                                                        snapshot.data!.size *
+                                                            20,
+                                                    width: 150,
+                                                    child: ListView.builder(
+                                                        itemCount:
+                                                            snapshot.data!.size,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                snapshot.data!
+                                                                    .docs[index]
+                                                                    .data()[
+                                                                        'score']
+                                                                    .toString(),
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                snapshot.data!
+                                                                    .docs[index]
+                                                                    .data()['name'],
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              )
+                                                            ],
+                                                          );
+                                                        }),
                                                   ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    snapshot.data!.docs[index]
-                                                        .data()['name'],
-                                                    style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  )
-                                                ],
-                                              );
-                                            }),
-                                      );
-                                    } else {
-                                      return const Text('no available scores');
-                                    }
-                                  } else if (snapshot.hasError) {
-                                    return const Text(
-                                        'couldn\'t load high scores');
-                                  } else {
-                                    return const Text('loading...');
-                                  }
-                                },
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                      // color: Colors.blue,
+                                                );
+                                              } else {
+                                                return const Text(
+                                                    'no available scores');
+                                              }
+                                            } else if (snapshot.hasError) {
+                                              return const Text(
+                                                  'couldn\'t load high scores');
+                                            } else {
+                                              return const Text('loading...');
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                            )
+                          ],
+                          // color: Colors.blue,
+                        ),
+                      ),
                     ),
                     Expanded(
                       flex: 4,
@@ -444,7 +499,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     if (!gameStarted)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 20, top: 10),
+                        padding: const EdgeInsets.only(bottom: 30, top: 20),
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 // disabledBackgroundColor:
