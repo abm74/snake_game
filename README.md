@@ -1,3 +1,1 @@
-# snake_game
-
-A new Flutter project.
+A simple snake game using flutter and firebase as a backend for saving top scores.
